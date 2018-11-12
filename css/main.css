@@ -37,9 +37,17 @@ html, body{
 #graphic-section {
   position: relative;
 }
+#input {
+  position: relative;
+  float: right;
+  top: -15px;
+  font-size: 11px;
+}
+
 #graphic-container {
   position: relative;
-  margin: 10px;
+  margin: 15px;
+  top: 10px;
 }
 #graphic-svg {
   position: relative;

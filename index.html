@@ -22,11 +22,15 @@
 		</div>
 	</section>
 	<section id="graphic-section">
+		<select id="input">
+				<option value="all" selected="selected" class="dropdown">Show both metrics</option>
+				<option value="holds" class="dropdown">Show conversion rate only</option>
+				<option value="single" class="dropdown">Show single-possession score rate only</option>
+		</select>
 		<div id="graphic-container">
 			<svg id="graphic-svg" width="100%" height="100%"></svg>
 		</div>
 	</section>
-
 
 	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="js/ultimate_utils.js"></script>

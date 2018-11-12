@@ -437,4 +437,386 @@ d3.csv("data/opoints.csv", rowConverter, function(data) {
                   .delay(4000)
                   .duration(1500)
                   .style('fill', color2);
+
+
+  // Interactivity with the input
+  d3.selectAll("#input")
+    .on("change", function() {
+
+      var selection = d3.select(this).node().value; //selection value
+
+      // Show everything
+      hold_circles.style("stroke", color1);
+      hold_circles_avg.style("stroke", color1);
+      hold_avg_text.style("fill", color1);
+      hold_avg_label.style("fill", "black");
+      single_circles.style("stroke", color2);
+      single_circles_avg.style("stroke", color2);
+      single_avg_text.style("fill", color2);
+      single_avg_label.style("fill", "black");
+
+      // On mouseover of circles
+      hold_circles.on("mouseover", function(d) {
+
+        var currentElement = d3.select(this);
+        var currentID = d.game_id;
+
+        // Determine starting x position
+        var xPosition;
+        if (d.division=="mens") {
+          xPosition = margin.left;
+        }
+        else if (d.division=="mixed") {
+          xPosition = margin.left + max_circle_r*2 + w_btwn_min;
+        }
+        else { xPosition = margin.left + max_circle_r*4 + w_btwn_min*2; }
+
+        // Hide averages
+        hold_avg_text.style("fill", "none");
+        single_avg_text.style("fill", "none");
+        hold_avg_label.style("fill", "none");
+        single_avg_label.style("fill", "none");
+        hold_circles_avg.style("opacity", .2);
+        single_circles_avg.style("opacity", .2);
+
+        // Change opacity of mouseover circle
+        currentElement.style("opacity", 1)
+                      .style("stroke-width", 5);
+        single_circles.filter(function(d) {
+                        return d.game_id == currentID;
+                      })
+                      .style("opacity", 1)
+                      .style("stroke-width", 5);
+
+        // Create a tooltip
+        var tooltip = svg.append("g")
+           .attr("id", "tooltip")
+           .attr("transform", "translate(" + xPosition + "," + (margin.top + 55 + max_circle_r*2) + ")")
+           .attr("width", max_circle_r*2)
+        // Add details
+        tooltip.append('text')
+               .attr("x", max_circle_r)
+               .attr("y", 5)
+               .text(function() {
+                 return d.year + " " + d.tournament + " " + d.game_type;
+               })
+               .attr("class", "tooltip_text");
+        tooltip.append("text")
+               .attr("x", max_circle_r)
+               .attr("y", 18)
+               .text(function() {
+                 return teamName_convert(d.win_team) + " (" + d.score.split("-")[0] + ") vs. " + teamName_convert(d.lose_team) + " (" + d.score.split("-")[1] + ")";
+               })
+               .attr("class", "tooltip_text");
+        tooltip.append("text")
+               .attr("x", max_circle_r)
+               .attr("y", 45)
+               .text(function() {
+                 return d3.format(".0%")(d.holds_percent)
+               })
+               .attr("class", "avg_text")
+               .style("fill", color1);
+        tooltip.append("text")
+               .attr("x", max_circle_r)
+               .attr("y", 75)
+               .text(function() {
+                 return d3.format(".0%")(d.singleholds_percent)
+               })
+               .attr("class", "avg_text")
+               .style("fill", color2);
+
+      }) // end on mouseover
+
+      hold_circles.on("mouseout", function(d) {
+        svg.select("#tooltip") //remove tooltip
+           .remove();
+
+        var currentElement = d3.select(this);
+        // Show averages again
+        hold_avg_text.style("fill", color1);
+        single_avg_text.style("fill", color2);
+        hold_avg_label.style("fill", "black");
+        single_avg_label.style("fill", "black");
+        hold_circles_avg.style("opacity", 1)
+                        .style("stroke-width", 4.5);
+        single_circles_avg.style("opacity", 1)
+                          .style("stroke-width", 4.5);
+
+        // Change opacity of mouseover circle
+        currentElement.style("opacity", .2);
+        single_circles.style("opacity", .2);
+
+      }) // end on mouseout
+
+      // Mouseover on single hold circles
+      single_circles.on("mouseover", function(d) {
+
+        var currentElement = d3.select(this);
+        var currentID = d.game_id;
+
+        // Determine starting x position
+        var xPosition;
+        if (d.division=="mens") {
+          xPosition = margin.left;
+        }
+        else if (d.division=="mixed") {
+          xPosition = margin.left + max_circle_r*2 + w_btwn_min;
+        }
+        else { xPosition = margin.left + max_circle_r*4 + w_btwn_min*2; }
+
+        // Hide averages
+        hold_avg_text.style("fill", "none");
+        single_avg_text.style("fill", "none");
+        hold_avg_label.style("fill", "none");
+        single_avg_label.style("fill", "none");
+        hold_circles_avg.style("opacity", .2);
+        single_circles_avg.style("opacity", .2);
+
+        // Change opacity of mouseover circle
+        currentElement.style("opacity", 1)
+                      .style("stroke-width", 5);
+        hold_circles.filter(function(d) {
+                      return d.game_id == currentID;
+                    })
+                    .style("opacity", 1)
+                    .style("stroke-width", 5);
+
+        // Create a tooltip
+        var tooltip = svg.append("g")
+           .attr("id", "tooltip")
+           .attr("transform", "translate(" + xPosition + "," + (margin.top + 55 + max_circle_r*2) + ")")
+           .attr("width", max_circle_r*2)
+        // Add details
+        tooltip.append('text')
+               .attr("x", max_circle_r)
+               .attr("y", 5)
+               .text(function() {
+                 return d.year + " " + d.tournament + " " + d.game_type;
+               })
+               .attr("class", "tooltip_text");
+        tooltip.append("text")
+               .attr("x", max_circle_r)
+               .attr("y", 18)
+               .text(function() {
+                 return teamName_convert(d.win_team) + " (" + d.score.split("-")[0] + ") vs. " + teamName_convert(d.lose_team) + " (" + d.score.split("-")[1] + ")";
+               })
+               .attr("class", "tooltip_text");
+        tooltip.append("text")
+               .attr("x", max_circle_r)
+               .attr("y", 45)
+               .text(function() {
+                 return d3.format(".0%")(d.holds_percent)
+               })
+               .attr("class", "avg_text")
+               .style("fill", color1);
+        tooltip.append("text")
+               .attr("x", max_circle_r)
+               .attr("y", 75)
+               .text(function() {
+                 return d3.format(".0%")(d.singleholds_percent)
+               })
+               .attr("class", "avg_text")
+               .style("fill", color2);
+
+      }) // end on mouseover
+
+      single_circles.on("mouseout", function(d) {
+        svg.select("#tooltip") //remove tooltip
+           .remove();
+
+        var currentElement = d3.select(this);
+        // Show averages again
+        hold_avg_text.style("fill", color1);
+        single_avg_text.style("fill", color2);
+        hold_avg_label.style("fill", "black");
+        single_avg_label.style("fill", "black");
+        hold_circles_avg.style("opacity", 1)
+                        .style("stroke-width", 4.5);
+        single_circles_avg.style("opacity", 1)
+                          .style("stroke-width", 4.5);
+
+        // Change opacity of mouseover circle
+        currentElement.style("opacity", .2);
+        hold_circles.style("opacity", .2);
+
+      }) // end on mouseout
+
+      if (selection=="holds") {
+
+        // Show hold data
+        hold_circles.style("stroke", color1);
+        hold_circles_avg.style("stroke", color1);
+        hold_avg_text.style("fill", color1);
+        hold_avg_label.style("fill", "black");
+
+        // Hide single data
+        single_circles.style("stroke", "none");
+        single_circles_avg.style("stroke", "none");
+        single_avg_text.style("fill", "none");
+        single_avg_label.style("fill", "none");
+
+        // // On mouseover of circles
+        hold_circles.on("mouseover", function(d) {
+
+          var currentElement = d3.select(this);
+          var currentID = d.game_id;
+
+          // Determine starting x position
+          var xPosition;
+          if (d.division=="mens") {
+            xPosition = margin.left;
+          }
+          else if (d.division=="mixed") {
+            xPosition = margin.left + max_circle_r*2 + w_btwn_min;
+          }
+          else { xPosition = margin.left + max_circle_r*4 + w_btwn_min*2; }
+
+          // Hide averages
+          hold_avg_text.style("fill", "none");
+          hold_avg_label.style("fill", "none");
+          hold_circles_avg.style("opacity", .2);
+
+          // Change opacity of mouseover circle
+          currentElement.style("opacity", 1)
+                        .style("stroke-width", 5);
+
+          // Create a tooltip
+          var tooltip = svg.append("g")
+             .attr("id", "tooltip")
+             .attr("transform", "translate(" + xPosition + "," + (margin.top + 55 + max_circle_r*2) + ")")
+             .attr("width", max_circle_r*2)
+          // Add details
+          tooltip.append('text')
+                 .attr("x", max_circle_r)
+                 .attr("y", 5)
+                 .text(function() {
+                   return d.year + " " + d.tournament + " " + d.game_type;
+                 })
+                 .attr("class", "tooltip_text");
+          tooltip.append("text")
+                 .attr("x", max_circle_r)
+                 .attr("y", 18)
+                 .text(function() {
+                   return teamName_convert(d.win_team) + " (" + d.score.split("-")[0] + ") vs. " + teamName_convert(d.lose_team) + " (" + d.score.split("-")[1] + ")";
+                 })
+                 .attr("class", "tooltip_text");
+          tooltip.append("text")
+                 .attr("x", max_circle_r)
+                 .attr("y", 45)
+                 .text(function() {
+                   return d3.format(".0%")(d.holds_percent)
+                 })
+                 .attr("class", "avg_text")
+                 .style("fill", color1);
+
+        }) // end on mouseover
+
+        hold_circles.on("mouseout", function(d) {
+          svg.select("#tooltip") //remove tooltip
+             .remove();
+
+          var currentElement = d3.select(this);
+          // Show averages again
+          hold_avg_text.style("fill", color1);
+          hold_avg_label.style("fill", "black");
+          hold_circles_avg.style("opacity", 1)
+                          .style("stroke-width", 4.5);
+
+          // Change opacity of mouseover circle
+          currentElement.style("opacity", .2);
+
+        }) // end on mouseout
+      } // end if holds
+
+      else if (selection=="single") {
+
+        // Hide holds data
+        hold_circles.style("stroke", "none");
+        hold_circles_avg.style("stroke", "none");
+        hold_avg_text.style("fill", "none");
+        hold_avg_label.style("fill", "none");
+
+        // Show single data
+        single_circles.style("stroke", color2);
+        single_circles_avg.style("stroke", color2);
+        single_avg_text.style("fill", color2);
+        single_avg_label.style("fill", "black");
+
+        // Mouseover on single hold circles
+        single_circles.on("mouseover", function(d) {
+
+           var currentElement = d3.select(this);
+           var currentID = d.game_id;
+
+           // Determine starting x position
+           var xPosition;
+           if (d.division=="mens") {
+             xPosition = margin.left;
+           }
+           else if (d.division=="mixed") {
+             xPosition = margin.left + max_circle_r*2 + w_btwn_min;
+           }
+           else { xPosition = margin.left + max_circle_r*4 + w_btwn_min*2; }
+
+           // Hide averages
+           single_avg_text.style("fill", "none");
+           single_avg_label.style("fill", "none");
+           single_circles_avg.style("opacity", .2);
+
+           // Change opacity of mouseover circle
+           currentElement.style("opacity", 1)
+                         .style("stroke-width", 5);
+
+           // Create a tooltip
+           var tooltip = svg.append("g")
+              .attr("id", "tooltip")
+              .attr("transform", "translate(" + xPosition + "," + (margin.top + 55 + max_circle_r*2) + ")")
+              .attr("width", max_circle_r*2)
+           // Add details
+           tooltip.append('text')
+                  .attr("x", max_circle_r)
+                  .attr("y", 5)
+                  .text(function() {
+                    return d.year + " " + d.tournament + " " + d.game_type;
+                  })
+                  .attr("class", "tooltip_text");
+           tooltip.append("text")
+                  .attr("x", max_circle_r)
+                  .attr("y", 18)
+                  .text(function() {
+                    return teamName_convert(d.win_team) + " (" + d.score.split("-")[0] + ") vs. " + teamName_convert(d.lose_team) + " (" + d.score.split("-")[1] + ")";
+                  })
+                  .attr("class", "tooltip_text");
+           tooltip.append("text")
+                  .attr("x", max_circle_r)
+                  .attr("y", 75)
+                  .text(function() {
+                    return d3.format(".0%")(d.singleholds_percent)
+                  })
+                  .attr("class", "avg_text")
+                  .style("fill", color2);
+
+         }) // end on mouseover
+
+         single_circles.on("mouseout", function(d) {
+           svg.select("#tooltip") //remove tooltip
+              .remove();
+
+           var currentElement = d3.select(this);
+           // Show averages again
+           single_avg_text.style("fill", color2);
+           single_avg_label.style("fill", "black");
+           single_circles_avg.style("opacity", 1)
+                             .style("stroke-width", 4.5);
+
+           // Change opacity of mouseover circle
+           currentElement.style("opacity", .2);
+           hold_circles.style("opacity", .2);
+
+         }) // end on mouseout
+
+      } // end if single
+
+    }) // end on function
+
 }) // end d3.csv

@@ -11,6 +11,7 @@ var teamNames = [{team_id: "bos_ironside", name: "Ironside"}, {team_id: "den_joh
                 {team_id: "sf_fury", name: "Fury"}, {team_id: "bos_brutesquad", name: "Brute Squad"},
                 {team_id: "den_mollybrown", name: "Molly Brown"}, {team_id: "atl_ozone", name: "Ozone"},
                 {team_id: "sea_riot", name: "Riot"}, {team_id: "col_revolution", name: "Revolution"}];
+
 var team_ids = teamNames.map(a => a.team_id);
 var teamName_convert = function(team_id) {
   var index = team_ids.indexOf(team_id);

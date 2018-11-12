@@ -33,8 +33,25 @@ function wrap(text, width) {
   });
 }; // end wrap function
 
+// Time-related
+var parseTime = d3.timeParse("%m/%d/%y %I:%M:%S"); // convert strings to Dates
+var formatTime = d3.timeFormat("%I:%M"); // convert Dates to strings
+
 // Colors
-var teal = d3.rgb(56,118,104);
+var red = d3.rgb(212,89,84);
+var light_red = d3.rgb(229,155,152);
+var dark_red = d3.rgb(135, 63, 53);
 var maroon = d3.rgb(170,62,71);
-var lime = d3.rgb(148,157,71);
+
 var orange = d3.rgb(234,158,43);
+
+var yellow = d3.rgb(232,164,51);
+var light_yellow = d3.rgb(241,200,132);
+var dark_yellow = d3.rgb(206, 112, 32);
+
+var lime = d3.rgb(148,157,71);
+var teal = d3.rgb(56,118,104);
+
+var blue = d3.rgb(20,151,252);
+var light_blue = d3.rgb(113,192,253);
+var dark_blue = d3.rgb(0, 109, 230);
