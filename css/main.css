@@ -61,3 +61,8 @@ html, body{
   text-anchor: middle;
   font-size: 16px;
 }
+.tooltip_text {
+  font-weight: 200;
+  text-anchor: middle;
+  font-size: 12px;
+}
