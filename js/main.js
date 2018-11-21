@@ -11,8 +11,8 @@ var dataset;
 var three_dataset = [{division: "MEN'S"}, {division:"MIXED"}, {division:"WOMEN'S"}]
 
 // Colors
-var color1 = d3.color("#35a993");
-var color2 = d3.color("#51addf");
+var color1 = dark_demblue;
+var color2 = light_plum;
 
 // row converter function
 var rowConverter = function(d) {
