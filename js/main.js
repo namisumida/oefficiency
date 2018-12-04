@@ -12,7 +12,7 @@ var three_dataset = [{division: "MEN'S"}, {division:"MIXED"}, {division:"WOMEN'S
 
 // Colors
 var color1 = dark_demblue;
-var color2 = light_plum;
+var color2 = d3.rgb(255,122,115);
 
 // row converter function
 var rowConverter = function(d) {
@@ -32,6 +32,7 @@ var rowConverter = function(d) {
     year: parseInt(d.year)
   };
 };
+var dataset_avg = mens_n = mens_holds = mens_singleholds = mixed_n = mixed_holds = mixed_singleholds = womens_n = womens_holds = womens_singleholds = 0;
 
 // Import data
 d3.csv("data/opoints.csv", rowConverter, function(data) {
@@ -39,29 +40,9 @@ d3.csv("data/opoints.csv", rowConverter, function(data) {
   dataset = data;
   // Calculate averages
 
-  // Find averages
-  var mens_n = mens_holds = mens_singleholds = mixed_n = mixed_holds = mixed_singleholds = womens_n = womens_holds = womens_singleholds = 0;
-  for (i=0; i <10; i++) {
-    var row = dataset[i];
-    if (row.division == "mens") {
-      mens_n += row.n_opoints;
-      mens_holds = mens_holds + row.holds;
-      mens_singleholds = mens_singleholds + row.singleholds;
-    }
-    else if (row.division == "mixed") {
-      mixed_n = mixed_n + row.n_opoints;
-      mixed_holds = mixed_holds + row.holds;
-      mixed_singleholds = mixed_singleholds + row.singleholds;
-    }
-    else {
-      womens_n = womens_n + row.n_opoints;
-      womens_holds = womens_holds + row.holds;
-      womens_singleholds = womens_singleholds + row.singleholds;
-    }
-  }
-  var dataset_avg = [{ division: "mens", holds_percent: mens_holds/mens_n, singleholds_percent: mens_singleholds/mens_n},
-                     { division: "mixed", holds_percent: mixed_holds/mixed_n, singleholds_percent: mixed_singleholds/mixed_n},
-                     { division: "womens", holds_percent: womens_holds/womens_n, singleholds_percent: womens_singleholds/womens_n}];
+  dataset_avg = [{ division: "mens", holds_percent: .80, singleholds_percent: .61},
+                 { division: "mixed", holds_percent: .78, singleholds_percent: .51},
+                 { division: "womens", holds_percent: .78, singleholds_percent: .50}];
 
   // Division labels
   var div_labels = svg.selectAll("div_labels")
