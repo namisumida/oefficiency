@@ -40,7 +40,7 @@ d3.csv("data/opoints.csv", rowConverter, function(data) {
   dataset = data;
   // Calculate averages
 
-  dataset_avg = [{ division: "mens", holds_percent: .80, singleholds_percent: .61},
+  dataset_avg = [{ division: "mens", holds_percent: .81, singleholds_percent: .61},
                  { division: "mixed", holds_percent: .78, singleholds_percent: .51},
                  { division: "womens", holds_percent: .78, singleholds_percent: .50}];
 
