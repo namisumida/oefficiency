@@ -33,113 +33,124 @@ var rowConverter = function(d) {
   };
 };
 var dataset_avg = mens_n = mens_holds = mens_singleholds = mixed_n = mixed_holds = mixed_singleholds = womens_n = womens_holds = womens_singleholds = 0;
-
-// Import data
-d3.csv("data/opoints.csv", rowConverter, function(data) {
-
-  dataset = data;
-  // Calculate averages
-
-  dataset_avg = [{ division: "mens", holds_percent: .81, singleholds_percent: .61},
-                 { division: "mixed", holds_percent: .78, singleholds_percent: .51},
-                 { division: "womens", holds_percent: .78, singleholds_percent: .50}];
-
+var single_avg_text, single_avg_label, single_circles_avg,single_circles,hold_avg_text,hold_avg_label,hold_circles_avg,hold_circles,div_labels;
+// Set up function
+function setup() {
   // Division labels
-  var div_labels = svg.selectAll("div_labels")
-                      .data(three_dataset)
-                      .enter()
-                      .append("text")
-                      .attr("class", "div_labels")
-                      .attr("x", function(d,i) {
-                        return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
-                      })
-                      .attr("y", margin.top)
-                      .text(function(d) {
-                        return d.division;
-                      });
+  div_labels = svg.selectAll("div_labels")
+                  .data(three_dataset)
+                  .enter()
+                  .append("text")
+                  .attr("class", "div_labels")
+                  .attr("x", function(d,i) {
+                    return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
+                  })
+                  .attr("y", margin.top)
+                  .text(function(d) {
+                    return d.division;
+                  });
 
-  var hold_circles = svg.selectAll("hold_circles")
-                        .data(dataset)
+  hold_circles = svg.selectAll("hold_circles")
+                    .data(dataset)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "hold_circles")
+                    .attr("cx", function(d,i) {
+                      if (d.division=="mens") {
+                        var div = 0;
+                      }
+                      else if (d.division=="mixed") {
+                        var div = 1;
+                      }
+                      else { div = 2; }
+                      return margin.left + max_circle_r*(2*div+1) + w_btwn_min*div;
+                    })
+                    .attr("cy", function(d) {
+                      return margin.top + 20 + max_circle_r + (max_circle_r - (max_circle_r * d.holds_percent));
+                    })
+                    .attr("r", function(d) {
+                      return max_circle_r*d.holds_percent;
+                    })
+                    .style("stroke-width", 4.5)
+                    .style('opacity', 0.15)
+                    .style("fill", "none");
+
+  hold_circles_avg = svg.selectAll("avg_hold_circles")
+                        .data(dataset_avg)
                         .enter()
                         .append("circle")
-                        .attr("class", "hold_circles")
+                        .attr("class", "avg_circles")
                         .attr("cx", function(d,i) {
-                          if (d.division=="mens") {
-                            var div = 0;
-                          }
-                          else if (d.division=="mixed") {
-                            var div = 1;
-                          }
-                          else { div = 2; }
-                          return margin.left + max_circle_r*(2*div+1) + w_btwn_min*div;
+                          return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
                         })
                         .attr("cy", function(d) {
                           return margin.top + 20 + max_circle_r + (max_circle_r - (max_circle_r * d.holds_percent));
                         })
                         .attr("r", function(d) {
-                          return max_circle_r*d.holds_percent;
+                          return max_circle_r * d.holds_percent;
                         })
-                        .style("stroke-width", 4.5)
-                        .style('opacity', 0.15)
-                        .style("fill", "none");
+                        .style("fill", "none")
+                        .style("stroke-width", 5)
+                        .style("opacity", 0);
 
-  var hold_circles_avg = svg.selectAll("avg_hold_circles")
-                            .data(dataset_avg)
-                            .enter()
-                            .append("circle")
-                            .attr("class", "avg_circles")
-                            .attr("cx", function(d,i) {
-                              return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
-                            })
-                            .attr("cy", function(d) {
-                              return margin.top + 20 + max_circle_r + (max_circle_r - (max_circle_r * d.holds_percent));
-                            })
-                            .attr("r", function(d) {
-                              return max_circle_r * d.holds_percent;
-                            })
-                            .style("fill", "none")
-                            .style("stroke-width", 5)
-                            .style("opacity", 0);
+  hold_avg_label = svg.append("text")
+                      .text("Average conversion rate")
+                      .attr("class", "avg_label")
+                      .attr("x", 0)
+                      .attr("y", margin.top + 45 + max_circle_r*2)
+                      .call(wrap, 80)
+                      .style("fill", "none");
 
-  var hold_avg_label = svg.append("text")
-                          .text("Average conversion rate")
-                          .attr("class", "avg_label")
-                          .attr("x", 0)
-                          .attr("y", margin.top + 45 + max_circle_r*2)
-                          .call(wrap, 80)
-                          .style("fill", "none");
-
-  var hold_avg_text = svg.selectAll("hold_avg_text")
-                         .data(dataset_avg)
-                         .enter()
-                         .append("text")
-                         .attr("class", "avg_text")
-                         .text(function(d) {
-                           return d3.format(".0%")(d.holds_percent)
-                         })
-                         .attr("x", function(d,i) {
-                           return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
-                         })
-                         .attr("y", function(d) {
-                           return margin.top + 55 + max_circle_r*2;
-                         })
-                         .style("fill", "none");
+  hold_avg_text = svg.selectAll("hold_avg_text")
+                     .data(dataset_avg)
+                     .enter()
+                     .append("text")
+                     .attr("class", "avg_text")
+                     .attr("id", "hold_avg_text")
+                     .text(function(d) {
+                       return d3.format(".0%")(d.holds_percent)
+                     })
+                     .attr("x", function(d,i) {
+                       return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
+                     })
+                     .attr("y", function(d) {
+                       return margin.top + 55 + max_circle_r*2;
+                     })
+                     .style("fill", "none");
 
   // single possession score circles
-  var single_circles = svg.selectAll("single_circles")
-                          .data(dataset)
+  single_circles = svg.selectAll("single_circles")
+                      .data(dataset)
+                      .enter()
+                      .append("circle")
+                      .attr("class", "single_circles")
+                      .attr("cx", function(d,i) {
+                        if (d.division=="mens") {
+                          var div = 0;
+                        }
+                        else if (d.division=="mixed") {
+                          var div = 1;
+                        }
+                        else { div = 2; }
+                        return margin.left + max_circle_r*(2*div+1) + w_btwn_min*div;
+                      })
+                      .attr("cy", function(d) {
+                        return margin.top + 20 + max_circle_r + (max_circle_r - (max_circle_r * d.singleholds_percent));
+                      })
+                      .attr("r", function(d) {
+                        return max_circle_r * d.singleholds_percent;
+                      })
+                      .style("fill", "none")
+                      .style("stroke-width", 4.5)
+                      .style('opacity', 0.15);
+
+  single_circles_avg = svg.selectAll("avg_single_circles")
+                          .data(dataset_avg)
                           .enter()
                           .append("circle")
-                          .attr("class", "single_circles")
+                          .attr("class", "avg_single_circles")
                           .attr("cx", function(d,i) {
-                            if (d.division=="mens") {
-                              var div = 0;
-                            }
-                            else if (d.division=="mixed") {
-                              var div = 1;
-                            }
-                            else { div = 2; }
-                            return margin.left + max_circle_r*(2*div+1) + w_btwn_min*div;
+                            return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
                           })
                           .attr("cy", function(d) {
                             return margin.top + 20 + max_circle_r + (max_circle_r - (max_circle_r * d.singleholds_percent));
@@ -148,52 +159,35 @@ d3.csv("data/opoints.csv", rowConverter, function(data) {
                             return max_circle_r * d.singleholds_percent;
                           })
                           .style("fill", "none")
-                          .style("stroke-width", 4.5)
-                          .style('opacity', 0.15);
+                          .style("stroke-width", 5)
+                          .style("opacity", 0);
 
-  var single_circles_avg = svg.selectAll("avg_single_circles")
-                              .data(dataset_avg)
-                              .enter()
-                              .append("circle")
-                              .attr("class", "avg_single_circles")
-                              .attr("cx", function(d,i) {
-                                return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
-                              })
-                              .attr("cy", function(d) {
-                                return margin.top + 20 + max_circle_r + (max_circle_r - (max_circle_r * d.singleholds_percent));
-                              })
-                              .attr("r", function(d) {
-                                return max_circle_r * d.singleholds_percent;
-                              })
-                              .style("fill", "none")
-                              .style("stroke-width", 5)
-                              .style("opacity", 0);
+  single_avg_label = svg.append("text")
+                        .text("Average single-possession score rate")
+                        .attr("class", "avg_label")
+                        .attr("id", "single_avg_label")
+                        .attr("x", 0)
+                        .attr("y", margin.top + 85 + max_circle_r*2)
+                        .call(wrap, 100)
+                        .style("fill", "none");
 
-  var single_avg_label = svg.append("text")
-                            .text("Average single-possession score rate")
-                            .attr("class", "avg_label")
-                            .attr("x", 0)
-                            .attr("y", margin.top + 85 + max_circle_r*2)
-                            .call(wrap, 100)
-                            .style("fill", "none");
+  single_avg_text = svg.selectAll("single_avg_text")
+                       .data(dataset_avg)
+                       .enter()
+                       .append("text")
+                       .attr("class", "avg_text")
+                       .text(function(d) {
+                         return d3.format(".0%")(d.singleholds_percent)
+                       })
+                       .attr("x", function(d,i) {
+                         return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
+                       })
+                       .attr("y", function(d) {
+                         return margin.top + 100 + max_circle_r*2;
+                       })
+                       .style("fill", "none");
 
-  var single_avg_text = svg.selectAll("single_avg_text")
-                         .data(dataset_avg)
-                         .enter()
-                         .append("text")
-                         .attr("class", "avg_text")
-                         .text(function(d) {
-                           return d3.format(".0%")(d.singleholds_percent)
-                         })
-                         .attr("x", function(d,i) {
-                           return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
-                         })
-                         .attr("y", function(d) {
-                           return margin.top + 100 + max_circle_r*2;
-                         })
-                         .style("fill", "none");
-
-// On mouseover of circles
+  // On mouseover of circles
   hold_circles.on("mouseover", function(d) {
 
     var currentElement = d3.select(this);
@@ -418,7 +412,19 @@ d3.csv("data/opoints.csv", rowConverter, function(data) {
                   .delay(4000)
                   .duration(1500)
                   .style('fill', color2);
+}; // end setup function
 
+// Import data
+d3.csv("data/opoints.csv", rowConverter, function(data) {
+
+  dataset = data;
+  // Calculate averages
+
+  dataset_avg = [{ division: "mens", holds_percent: .81, singleholds_percent: .61},
+                 { division: "mixed", holds_percent: .78, singleholds_percent: .51},
+                 { division: "womens", holds_percent: .78, singleholds_percent: .50}];
+
+  init();
 
   // Interactivity with the input
   d3.selectAll("#input")
@@ -801,3 +807,21 @@ d3.csv("data/opoints.csv", rowConverter, function(data) {
     }) // end on function
 
 }) // end d3.csv
+
+// Resizing
+function resize() {
+  // Get width and update scales/margins/sizes
+  w_svg = document.getElementById('graphic-svg').getBoundingClientRect().width; // get width and height based on window size
+  w_btwn_min = w_svg/10;
+  max_circle_r = ((w_svg - (2*w_btwn_min) - margin.left - margin.right)/3)/2; // width of the svg, minus 2 btwn spacing, divide by 3 to get diameter of each circle, divide by 2 to get r
+
+  redraw();
+}; // end resize function
+
+function init() {
+  // call setup once on page load
+  setup();
+
+  // setup event listener to handle window resize
+  window.addEventListener('resize', resize);
+}; // end init function
