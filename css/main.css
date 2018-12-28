@@ -2,11 +2,10 @@ html, body{
   height: 100%;
   font-family: 'Open Sans', sans-serif;
   max-width: 1000px;
-  min-width: 500px;
+  min-width: 370px;
   margin-left: 10px;
   margin-right: 10px;
 }
-
 .title-container {
   position: relative;
   line-height: 1.5;
@@ -46,23 +45,31 @@ html, body{
 
 #graphic-container {
   position: relative;
-  margin: 15px;
   top: 10px;
 }
 #graphic-svg {
   position: relative;
   min-height: 400px;
+  width: 100%;
 }
 .div_labels {
   text-anchor: middle;
   font-weight: 800;
   font-size: 18px;
 }
-
 .avg_label {
   font-weight: 200;
   text-anchor: start;
-  font-size: 11px;
+}
+@media screen and (max-width: 590px) {
+  .avg_label {
+    font-size: 10px;
+  }
+}
+@media screen and (min-width: 590px) {
+  .avg_label {
+    font-size: 11px;
+  }
 }
 .avg_text {
   font-weight: 600;

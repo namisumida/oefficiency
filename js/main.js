@@ -5,6 +5,10 @@ var margin = {top: 20, bottom: 0, left: 60, right: 5};
 var w_svg = document.getElementById('graphic-svg').getBoundingClientRect().width; // get width and height based on window size
 var w_btwn_min = w_svg/10;
 var max_circle_r = ((w_svg - (2*w_btwn_min) - margin.left - margin.right)/3)/2; // width of the svg, minus 2 btwn spacing, divide by 3 to get diameter of each circle, divide by 2 to get r
+if (w_svg>=590) {
+  var w_labels = 90;
+}
+else { var w_labels = 50; }
 
 // Datasets
 var dataset;
@@ -94,11 +98,16 @@ function setup() {
                         .style("opacity", 0);
 
   hold_avg_label = svg.append("text")
-                      .text("Average conversion rate")
+                      .text("Avg. conversion rate")
                       .attr("class", "avg_label")
                       .attr("x", 0)
-                      .attr("y", margin.top + 45 + max_circle_r*2)
-                      .call(wrap, 80)
+                      .attr("y", function() {
+                        if (w_svg>=590) {
+                          return margin.top + 45 + max_circle_r*2
+                        }
+                        else { return margin.top + 40 + max_circle_r*2; }
+                      })
+                      .call(wrap, w_labels)
                       .style("fill", "none");
 
   hold_avg_text = svg.selectAll("hold_avg_text")
@@ -163,12 +172,17 @@ function setup() {
                           .style("opacity", 0);
 
   single_avg_label = svg.append("text")
-                        .text("Average single-possession score rate")
+                        .text("Avg. single- possession score rate")
                         .attr("class", "avg_label")
                         .attr("id", "single_avg_label")
                         .attr("x", 0)
-                        .attr("y", margin.top + 85 + max_circle_r*2)
-                        .call(wrap, 100)
+                        .attr("y", function() {
+                          if (w_svg>=590) {
+                            return margin.top + 85 + max_circle_r*2;
+                          }
+                          else { return margin.top + 90 + max_circle_r*2; }
+                        })
+                        .call(wrap, w_labels)
                         .style("fill", "none");
 
   single_avg_text = svg.selectAll("single_avg_text")
@@ -814,6 +828,10 @@ function resize() {
   w_svg = document.getElementById('graphic-svg').getBoundingClientRect().width; // get width and height based on window size
   w_btwn_min = w_svg/10;
   max_circle_r = ((w_svg - (2*w_btwn_min) - margin.left - margin.right)/3)/2; // width of the svg, minus 2 btwn spacing, divide by 3 to get diameter of each circle, divide by 2 to get r
+  if (w_svg>=590) {
+    w_labels = 90;
+  }
+  else { w_labels = 50; }
 
   redraw();
 }; // end resize function

@@ -30,10 +30,15 @@ function redraw() {
                     return max_circle_r * d.holds_percent;
                   });
 
-  hold_avg_label.text("Average conversion rate")
+  hold_avg_label.text("Avg. conversion rate")
                 .attr("x", 0)
-                .attr("y", margin.top + 45 + max_circle_r*2)
-                .call(wrap, 80);
+                .attr("y", function() {
+                  if (w_svg>=590) {
+                    return margin.top + 45 + max_circle_r*2
+                  }
+                  else { return margin.top + 40 + max_circle_r*2; }
+                })
+                .call(wrap, w_labels);
 
   hold_avg_text.attr("x", function(d,i) {
                  return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
@@ -70,10 +75,15 @@ function redraw() {
                       return max_circle_r * d.singleholds_percent;
                     });
 
-  single_avg_label.text("Average single-possession score rate")
+  single_avg_label.text("Avg. single- possession score rate")
                   .attr("x", 0)
-                  .attr("y", margin.top + 85 + max_circle_r*2)
-                  .call(wrap, 100);
+                  .attr("y", function() {
+                    if (w_svg>=590) {
+                      return margin.top + 85 + max_circle_r*2;
+                    }
+                    else { return margin.top + 90 + max_circle_r*2; }
+                  })
+                  .call(wrap, w_labels);
 
   single_avg_text.attr("x", function(d,i) {
                    return margin.left + max_circle_r*(2*i+1) + w_btwn_min*i;
